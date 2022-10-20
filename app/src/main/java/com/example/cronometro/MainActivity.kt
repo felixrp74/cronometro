@@ -1,10 +1,10 @@
 package com.example.cronometro
 
+import android.content.Intent
 import android.media.RingtoneManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.View
 import com.example.cronometro.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -20,21 +20,28 @@ class MainActivity : AppCompatActivity() {
             play()
         }
 
+        binding.btnCronometroActivity.setOnClickListener {
+            val i = Intent(this@MainActivity, ChronometerActivity::class.java)
+            i.putExtra("key", "valor enorme")
+            startActivity(i)
+        }
+
     }
 
     private fun play(){
         val seg = binding.txtSegundos.text.toString().toLong()*1000
         val min = binding.txtMinutos.text.toString().toLong()*1000*60
         val hor = binding.txtHoras.text.toString().toLong()*1000*60*60
-        val tiempoMilisegundos = seg+min+hor
+        val tempoMilliseconds = seg+min+hor
 
-        object : CountDownTimer(tiempoMilisegundos, 1000){
+        object : CountDownTimer(tempoMilliseconds, 1000){
             override fun onFinish() {
                 val notificacion = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
                 val r = RingtoneManager.getRingtone(this@MainActivity, notificacion)
                 r.play()
                 this.cancel()
             }
+
 
             override fun onTick(millisUntilFinished: Long) {
                 var tiempoSegundos = (millisUntilFinished/1000).toInt()+1
@@ -44,7 +51,6 @@ class MainActivity : AppCompatActivity() {
                 val min = tiempoSegundos/60
                 tiempoSegundos = tiempoSegundos%60
                 binding.tvTimeBack.text = horas.toString().padStart(2,'0')+":"+min.toString().padStart(2,'0')+":"+tiempoSegundos.toString().padStart(2,'0')
-
 
             }
 
